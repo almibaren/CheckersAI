@@ -244,17 +244,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             button.setEnabled(False)
 
     def crearFichasBlancas(self):
-        #blancas.append(self.button61)
-        #blancas.append(self.button63)
-        #blancas.append(self.button65)
-        #blancas.append(self.button67)
-        #blancas.append(self.button72)
-        #blancas.append(self.button74)
-        #blancas.append(self.button76)
-        #blancas.append(self.button78)
-        #blancas.append(self.button81)
-        #blancas.append(self.button83)
-        #blancas.append(self.button85)
+        blancas.append(self.button61)
+        blancas.append(self.button63)
+        blancas.append(self.button65)
+        blancas.append(self.button67)
+        blancas.append(self.button72)
+        blancas.append(self.button74)
+        blancas.append(self.button76)
+        blancas.append(self.button78)
+        blancas.append(self.button81)
+        blancas.append(self.button83)
+        blancas.append(self.button85)
         blancas.append(self.button87)
         for button in blancas:
             button.setText('੦')
@@ -452,7 +452,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return self.movimientoPeonBlancasMinMax(x,y,self.convertirTablero(arrayTablero))
 
     def moverFicha(self, posX, posY, newX, newY, comer):
+        dama=False
         self.quitarColor()
+        if arrayTablero[posX][posY].text()==damaBlanca:
+            dama=True
         arrayTablero[newX][newY].setText(arrayTablero[posX][posY].text())
         arrayTablero[posX][posY].setText("")
         arrayTablero[posX][posY].setEnabled(False)
@@ -461,6 +464,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             arrayTablero[int((posX + newX) / 2)][int((posY + newY) / 2)].setText("")
         if newX == 0:
             arrayTablero[newX][newY].setText(damaBlanca)
+        if dama:
+            x = 0
+            y = 0
+            if posX < newX:
+                x = -1
+            else:
+                x = 1
+            if posY < newY:
+                y = -1
+            else:
+                y = 1
+            arrayTablero[newX + x][newY + y].setText("")
         self.buttonPasar.setEnabled(True)
         self.deshabilitarBotones()
 
@@ -1157,7 +1172,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             elif movimiento == 14 or movimiento == 10:
                 movimiento = 10
                 movimientos.extend(
-                    self.posibleMovimientoBlancasMinMax(movimientoArribaIzquierda, movimiento, x + cont, y - cont))
+                    self.posibleMovimientoNegrasMinMax(movimientoArribaIzquierda, movimiento, x + cont, y - cont))
                 break
             elif movimiento == 2 or movimiento == 11:
                 movimiento = -1
@@ -1179,7 +1194,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             elif movimiento == 14 or movimiento == 11:
                 movimiento = 11
                 movimientos.extend(
-                    self.posibleMovimientoBlancasMinMax(movimientoArribaDerecha, movimiento, x + cont, y + cont))
+                    self.posibleMovimientoNegrasMinMax(movimientoArribaDerecha, movimiento, x + cont, y + cont))
                 break
             elif movimiento == 1 or movimiento == 10 or movimiento == 13:
                 movimiento = -1
