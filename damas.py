@@ -244,17 +244,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             button.setEnabled(False)
 
     def crearFichasBlancas(self):
-        blancas.append(self.button61)
-        blancas.append(self.button63)
-        blancas.append(self.button65)
-        blancas.append(self.button67)
-        blancas.append(self.button72)
-        blancas.append(self.button74)
-        blancas.append(self.button76)
-        blancas.append(self.button78)
-        blancas.append(self.button81)
-        blancas.append(self.button83)
-        blancas.append(self.button85)
+        #blancas.append(self.button61)
+        #blancas.append(self.button63)
+        #blancas.append(self.button65)
+        #blancas.append(self.button67)
+        #blancas.append(self.button72)
+        #blancas.append(self.button74)
+        #blancas.append(self.button76)
+        #blancas.append(self.button78)
+        #blancas.append(self.button81)
+        #blancas.append(self.button83)
+        #blancas.append(self.button85)
         blancas.append(self.button87)
         for button in blancas:
             button.setText('੦')
@@ -285,6 +285,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             x=x+1
         for bu in bla:
             bu.setEnabled(True)
+        if len(bla) == 0:
+            print("he perdido")
+        posiciones = self.todosMovimientosBlancas(self.convertirTablero(arrayTablero))
+        posiciones = [resultado for resultado in posiciones if resultado != []]
+        if len(posiciones) == 0:
+            print("HEEEEE PERDIDO")
+        if len(neg)==0:
+            print("he ganado")
+        posiciones = self.todosMovimientosNegras(self.convertirTablero(arrayTablero))
+        posiciones = [resultado for resultado in posiciones if resultado != []]
+        if len(posiciones) == 0:
+            print("HEEEEE GANADO")
+
 
         blancas = bla
         negras = neg
@@ -449,8 +462,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if newX == 0:
             arrayTablero[newX][newY].setText(damaBlanca)
         self.buttonPasar.setEnabled(True)
-        for button in blancas:
-            button.setEnabled(False)
+        self.deshabilitarBotones()
 
     def moverFichaNegras(self, posX, posY, newX, newY, comer):
         self.quitarColor()
@@ -512,9 +524,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def sumaHeuristica(self, tableroPuntuar):
         # return random()
         suma = 0
+        blanca =0
+        negra=0
         for bu in tableroPuntuar:
             for ficha in bu:
-                suma = suma + ficha
+                if ficha==1:
+                    suma=suma + 100
+                    blanca=blanca+1
+                elif ficha ==5:
+                    suma=suma + 300
+                    blanca = blanca + 1
+                elif ficha==-1:
+                    suma = suma -100
+                    negra = negra + 1
+                elif ficha == -5:
+                    suma = suma - 300
+                    negra = negra + 1
+        if blanca == 0:
+            suma =-10000
+        elif negra == 0:
+            suma = 10000
         return suma
 
     def posiblesMovimientos(self, tableroMovimientos):
@@ -909,6 +938,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def hacerMovimientosBlancas(self, posX, posY, newX, newY, comer, tableroHacerMovimientos):
         nuevoTablero = copy.deepcopy(tableroHacerMovimientos)
+        dama = False
+        if nuevoTablero[posX][posY]==5:
+            dama=True
         if newX > 7 or newX < 0 or newY < 0 or newY > 7:
             return []
         nuevoTablero[newX][newY] = nuevoTablero[posX][posY]
@@ -916,7 +948,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if comer:
             nuevoTablero[int((posX + newX) / 2)][int((posY + newY) / 2)] = 0
-
+        if dama:
+            x=0
+            y=0
+            if posX<newX:
+                x=-1
+            else:
+                x=1
+            if posY<newY:
+                y=-1
+            else:
+                y=1
+            nuevoTablero[newX+x][newY+y]=0
+        self.deshabilitarBotones()
         return nuevoTablero
 
     def hacerMovimientosNegras(self, posX, posY, newX, newY, comer, tableroHacerMovimientos):
