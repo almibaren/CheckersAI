@@ -29,6 +29,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.deshabilitarBotones()
         self.crearArrayBiDimensional()
         self.buttonPasar.clicked.connect(self.habilitarDeshabilitarBlancas)
+        self.label_GameOver.setText("")
+        self.label_Victory.setText("")
 
     def crearArrayBiDimensional(self):
         arrayTablero[0][0] = self.button11
@@ -283,20 +285,32 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 y=y+1
             y=0
             x=x+1
-        for bu in bla:
+                for bu in bla:
             bu.setEnabled(True)
-        if len(bla) == 0:
-            print("he perdido")
         posiciones = self.todosMovimientosBlancas(self.convertirTablero(arrayTablero))
         posiciones = [resultado for resultado in posiciones if resultado != []]
-        if len(posiciones) == 0:
-            print("HEEEEE PERDIDO")
-        if len(neg)==0:
-            print("he ganado")
         posiciones = self.todosMovimientosNegras(self.convertirTablero(arrayTablero))
         posiciones = [resultado for resultado in posiciones if resultado != []]
-        if len(posiciones) == 0:
-            print("HEEEEE GANADO")
+        if len(bla) == 0:
+            self.label_GameOver.setText("GAME OVER")
+            self.label_GameOver.setStyleSheet("color:red")
+            self.label_Victory.setText("Has perdido...")
+            self.label_Victory.setStyleSheet("color:red")
+        elif len(posiciones) == 0:
+            self.label_GameOver.setText("GAME OVER")
+            self.label_GameOver.setStyleSheet("color:red")
+            self.label_Victory.setText("No quedan mas movimientos")
+            self.label_Victory.setStyleSheet("color:red")
+        if len(neg) == 0:
+            self.label_GameOver.setText("GAME OVER")
+            self.label_GameOver.setStyleSheet("color:red")
+            self.label_Victory.setText("Victoria")
+            self.label_Victory.setStyleSheet("color:red")
+        elif len(posiciones) == 0:
+            self.label_GameOver.setText("GAME OVER")
+            self.label_GameOver.setStyleSheet("color:red")
+            self.label_Victory.setText("No quedan mas movimientos")
+            self.label_Victory.setStyleSheet("color:red")
 
 
         blancas = bla
