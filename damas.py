@@ -259,7 +259,38 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for button in blancas:
             button.setText('੦')
 
+    def cambiarArrays(self):
+        contBla=0
+        contNeg=0
+        x=0
+        y=0
+        bla=[]
+        neg=[]
+        for fila in arrayTablero:
+            for columna in fila:
+                if columna.text() == peonBlanca:
+                    bla.append(columna)
+                    contBla = contBla + 1
+                elif columna.text() == damaBlanca:
+                    bla.append(columna)
+                    contBla = contBla + 1
+                elif columna.text() == peonNegro:
+                    neg.append(columna)
+                    contNeg = contNeg + 1
+                elif columna.text() == damaNegro:
+                    neg.append(columna)
+                    contNeg = contNeg + 1
+                y=y+1
+            y=0
+            x=x+1
+        for bu in bla:
+            bu.setEnabled(True)
+
+        blancas = bla
+        negras = neg
+
     def habilitarDeshabilitarBlancas(self):
+        self.cambiarArrays()
         if self.miTurno == False:
 
             for button in blancas:
@@ -274,6 +305,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                         sys.maxsize)
             self.moverFichaNegras(valoresMinMax[1][0], valoresMinMax[1][1], valoresMinMax[1][2], valoresMinMax[1][3],
                                   valoresMinMax[1][4])
+
 
     def deshabilitarBotones(self):
         for button in tablero:
@@ -391,32 +423,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             movimientos=self.movimientoDamasBlancas(x-1,y-1,self.convertirTablero(arrayTablero))
             for movimiento in movimientos:
                 self.siguienteMovimiento(movimiento[2],movimiento[3])
-        elif b.text() == peonNegro:
-            self.posibleMovimientoX = x
-            self.posibleMovimientoY = y
-            movi = self.movimientosPeonNegras(x - 1, y - 1)
-            if movi == 0:
-                self.comer = False
-                self.siguienteMovimiento(x, y - 2)
-                self.siguienteMovimiento(x, y)
-            elif movi == -1:
-                return -1
-            elif movi == 10:
-                self.moverFichaNegras(x - 1, y - 1, x + 1, y - 3, True)
-            elif movi == 1:
-                self.moverFichaNegras(x - 1, y - 1, x, y - 2, False)
-            elif movi == 2:
-                self.moverFichaNegras(x - 1, y - 1, x, y, False)
-            elif movi == 11:
-                self.moverFichaNegras(x - 1, y - 1, x, y + 1, True)
-            elif movi == 12:
-                self.moverFichaNegras(x - 1, y - 1, x + 1, y + 1, True)
-            elif movi == 13:
-                self.moverFichaNegras(x - 1, y - 1, x + 1, y - 3, True)
-            elif movi == 14:
-                self.comer = True
-                self.siguienteMovimiento(x + 1, y + 1)
-                self.siguienteMovimiento(x + 1, y - 3)
         elif b.text() == "_":
             if self.miTurno:
                 if self.comer:
@@ -434,38 +440,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def moverFicha(self, posX, posY, newX, newY, comer):
         self.quitarColor()
-
+        arrayTablero[newX][newY].setText(arrayTablero[posX][posY].text())
         arrayTablero[posX][posY].setText("")
         arrayTablero[posX][posY].setEnabled(False)
         arrayTablero[newX][newY].setEnabled(True)
-        arrayTablero[newX][newY].setText(peonBlanca)
-        cont = 0
-        for button in negras:
-            if button.objectName() == arrayTablero[posX - 1][posY - 1].objectName():
-                del negras[cont]
-            cont = cont + 1
-        cont = 0
-        blancas.append(arrayTablero[newX][newY])
         if comer:
             arrayTablero[int((posX + newX) / 2)][int((posY + newY) / 2)].setText("")
         if newX == 0:
-            arrayTablero[newX][newY].setText("⭕")
+            arrayTablero[newX][newY].setText(damaBlanca)
         self.buttonPasar.setEnabled(True)
         for button in blancas:
             button.setEnabled(False)
 
     def moverFichaNegras(self, posX, posY, newX, newY, comer):
         self.quitarColor()
+        arrayTablero[newX][newY].setText(arrayTablero[posX][posY].text())
         arrayTablero[posX][posY].setText("")
         arrayTablero[posX][posY].setStyleSheet("background-color:#bdcebe")
         arrayTablero[newX][newY].setStyleSheet("background-color:#bdcebe")
-        arrayTablero[newX][newY].setText(peonNegro)
-        cont = 0
-        for button in blancas:
-            if button.objectName() == arrayTablero[posX - 1][posY - 1].objectName():
-                del blancas[cont]
-            cont = cont + 1
-        negras.append(arrayTablero[newX - 1][newY - 1])
         if comer:
             arrayTablero[int((posX + newX) / 2)][int((posY + newY) / 2)].setText("")
         if newX == 7:
@@ -1074,8 +1066,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 break
             if movimiento == 0:
                 movimiento = 1
-            elif movimiento == 14:
+            elif movimiento == 14 or movimiento == 10:
                 movimiento = 10
+                movimientos.extend(
+                    self.posibleMovimientoBlancasMinMax(movimientoArribaIzquierda, movimiento, x - cont, y - cont))
+                break
             elif movimiento == 2 or movimiento == 11:
                 movimiento = -1
             movimientos.extend(self.posibleMovimientoBlancasMinMax(movimientoArribaIzquierda,movimiento,x-cont,y-cont))
@@ -1093,8 +1088,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 break
             if movimiento == 0:
                 movimiento = 2
-            elif movimiento == 14:
+            elif movimiento == 14 or movimiento == 11:
                 movimiento = 11
+                movimientos.extend(
+                    self.posibleMovimientoBlancasMinMax(movimientoArribaDerecha, movimiento, x - cont, y + cont))
+                break
             elif movimiento == 1 or movimiento == 10:
                 movimiento = -1
             movimientos.extend(self.posibleMovimientoBlancasMinMax(movimientoArribaDerecha,movimiento,x-cont,y+cont))
@@ -1112,8 +1110,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 break
             if movimiento == 0:
                 movimiento = 1
-            elif movimiento == 14:
+            elif movimiento == 14 or movimiento == 10:
                 movimiento = 10
+                movimientos.extend(
+                    self.posibleMovimientoBlancasMinMax(movimientoArribaIzquierda, movimiento, x + cont, y - cont))
+                break
             elif movimiento == 2 or movimiento == 11:
                 movimiento = -1
             movimientos.extend(self.posibleMovimientoNegrasMinMax(movimientoArribaIzquierda,movimiento,x+cont,y-cont))
@@ -1131,8 +1132,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 break
             if movimiento == 0:
                 movimiento = 2
-            elif movimiento == 14 or movimiento == 12:
+            elif movimiento == 14 or movimiento == 11:
                 movimiento = 11
+                movimientos.extend(
+                    self.posibleMovimientoBlancasMinMax(movimientoArribaDerecha, movimiento, x + cont, y + cont))
+                break
             elif movimiento == 1 or movimiento == 10 or movimiento == 13:
                 movimiento = -1
             movimientos.extend(self.posibleMovimientoNegrasMinMax(movimientoArribaDerecha,movimiento,x+cont,y+cont))
