@@ -287,16 +287,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             x=x+1
         for bu in bla:
             bu.setEnabled(True)
-        posiciones = self.todosMovimientosBlancas(self.convertirTablero(arrayTablero))
-        posiciones = [resultado for resultado in posiciones if resultado != []]
-        posiciones = self.todosMovimientosNegras(self.convertirTablero(arrayTablero))
-        posiciones = [resultado for resultado in posiciones if resultado != []]
+        posicionesMB = self.todosMovimientosBlancas(self.convertirTablero(arrayTablero))
+        posicionesMB = [resultado for resultado in posiciones if resultado != []]
+        posicionesMN = self.todosMovimientosNegras(self.convertirTablero(arrayTablero))
+        posicionesMN = [resultado for resultado in posiciones if resultado != []]
         if len(bla) == 0:
             self.label_GameOver.setText("GAME OVER")
             self.label_GameOver.setStyleSheet("color:red")
             self.label_Victory.setText("Has perdido...")
             self.label_Victory.setStyleSheet("color:red")
-        elif len(posiciones) == 0:
+        elif len(posicionesMB) == 0:
             self.label_GameOver.setText("GAME OVER")
             self.label_GameOver.setStyleSheet("color:red")
             self.label_Victory.setText("No quedan mas movimientos")
@@ -306,7 +306,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.label_GameOver.setStyleSheet("color:red")
             self.label_Victory.setText("Victoria")
             self.label_Victory.setStyleSheet("color:red")
-        elif len(posiciones) == 0:
+        elif len(posicionesMN) == 0:
             self.label_GameOver.setText("GAME OVER")
             self.label_GameOver.setStyleSheet("color:red")
             self.label_Victory.setText("No quedan mas movimientos")
